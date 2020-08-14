@@ -3,30 +3,34 @@ package ru.iliketobreathe.restaurantvote.web.user;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import ru.iliketobreathe.restaurantvote.model.User;
-import ru.iliketobreathe.restaurantvote.service.UserService;
+import ru.iliketobreathe.restaurantvote.repository.DataJpaUserRepository;
 import ru.iliketobreathe.restaurantvote.to.UserTo;
 import ru.iliketobreathe.restaurantvote.util.UserUtil;
 
 import java.util.List;
 
-import static ru.iliketobreathe.restaurantvote.util.ValidationUtil.assureIdConsistent;
-import static ru.iliketobreathe.restaurantvote.util.ValidationUtil.checkNew;
+import static ru.iliketobreathe.restaurantvote.util.ValidationUtil.*;
 
 public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserService service;
+    private DataJpaUserRepository repository;
 
+    @Cacheable("users")
     public List<User> getAll() {
         log.info("getAll");
-        return service.getAll();
+        return repository.getAll();
     }
 
     public User get(int id) {
         log.info("get {}", id);
-        return service.get(id);
+        return checkNotFoundWithId(repository.get(id), id);
     }
 
     public User create(UserTo userTo) {
@@ -34,31 +38,41 @@ public abstract class AbstractUserController {
         return create(UserUtil.createNewFromTo(userTo));
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         log.info("create {}", user);
         checkNew(user);
-        return service.create(user);
+        Assert.notNull(user, "user must not be null");
+        return repository.save(user);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         log.info("delete {}", id);
-        service.delete(id);
+        checkNotFoundWithId(repository.delete(id), id);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public void update(User user, int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
-        service.update(user);
+        Assert.notNull(user, "user must not be null");
+        repository.save(user);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
+    @Transactional
     public void update(UserTo userTo, int id) {
         log.info("update {} with id={}", userTo, id);
         assureIdConsistent(userTo, id);
-        service.update(userTo);
+        User user = get(userTo.id());
+        User updatedUser = UserUtil.updateFromTo(user, userTo);
+        repository.save(updatedUser); // !! need only for JDBC implementation
     }
 
     public User getByMail(String email) {
         log.info("getByEmail {}", email);
-        return service.getByEmail(email);
+        Assert.notNull(email, "email must not be null");
+        return checkNotFound(repository.getByEmail(email), "email=" + email);
     }
 }
