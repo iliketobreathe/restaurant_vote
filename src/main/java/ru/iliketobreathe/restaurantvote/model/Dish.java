@@ -53,11 +53,19 @@ public class Dish extends AbstractNamedEntity {
         return date;
     }
 
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
     public void setPrice(int price) {
         this.price = price;
     }
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

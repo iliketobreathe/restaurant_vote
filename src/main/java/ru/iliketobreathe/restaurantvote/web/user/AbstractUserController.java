@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.iliketobreathe.restaurantvote.model.User;
-import ru.iliketobreathe.restaurantvote.repository.DataJpaUserRepository;
+import ru.iliketobreathe.restaurantvote.repository.user.DataJpaUserRepository;
 import ru.iliketobreathe.restaurantvote.to.UserTo;
 import ru.iliketobreathe.restaurantvote.util.UserUtil;
 

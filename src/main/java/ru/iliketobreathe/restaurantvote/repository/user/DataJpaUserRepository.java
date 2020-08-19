@@ -1,4 +1,4 @@
-package ru.iliketobreathe.restaurantvote.repository;
+package ru.iliketobreathe.restaurantvote.repository.user;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
