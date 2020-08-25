@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.iliketobreathe.restaurantvote.model.User;
@@ -14,6 +15,7 @@ import ru.iliketobreathe.restaurantvote.util.UserUtil;
 
 import java.util.List;
 
+import static ru.iliketobreathe.restaurantvote.util.UserUtil.prepareToSave;
 import static ru.iliketobreathe.restaurantvote.util.ValidationUtil.*;
 
 public abstract class AbstractUserController {
@@ -21,6 +23,9 @@ public abstract class AbstractUserController {
 
     @Autowired
     private DataJpaUserRepository repository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Cacheable("users")
     public List<User> getAll() {
@@ -43,6 +48,7 @@ public abstract class AbstractUserController {
         log.info("create {}", user);
         checkNew(user);
         Assert.notNull(user, "user must not be null");
+        prepareToSave(user, passwordEncoder);
         return repository.save(user);
     }
 
@@ -57,7 +63,8 @@ public abstract class AbstractUserController {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
         Assert.notNull(user, "user must not be null");
-        repository.save(user);
+        prepareToSave(user, passwordEncoder);
+//        repository.save(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -67,7 +74,8 @@ public abstract class AbstractUserController {
         assureIdConsistent(userTo, id);
         User user = get(userTo.id());
         User updatedUser = UserUtil.updateFromTo(user, userTo);
-        repository.save(updatedUser); // !! need only for JDBC implementation
+        prepareToSave(updatedUser, passwordEncoder);
+//        repository.save(updatedUser); // !! need only for JDBC implementation
     }
 
     public User getByMail(String email) {

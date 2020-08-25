@@ -1,7 +1,6 @@
 package ru.iliketobreathe.restaurantvote.model;
 
 import org.hibernate.Hibernate;
-import org.springframework.util.Assert;
 import ru.iliketobreathe.restaurantvote.HasId;
 
 import javax.persistence.*;

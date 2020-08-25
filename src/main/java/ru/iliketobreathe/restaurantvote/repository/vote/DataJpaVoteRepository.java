@@ -2,6 +2,8 @@ package ru.iliketobreathe.restaurantvote.repository.vote;
 
 import org.springframework.stereotype.Repository;
 import ru.iliketobreathe.restaurantvote.model.Vote;
+import ru.iliketobreathe.restaurantvote.repository.restaurant.DataJpaRestaurantRepository;
+import ru.iliketobreathe.restaurantvote.repository.user.DataJpaUserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,12 +12,19 @@ import java.util.List;
 public class DataJpaVoteRepository {
 
     private final CrudVoteRepository crudRepository;
+    private final DataJpaRestaurantRepository restaurantRepository;
+    private final DataJpaUserRepository userRepository;
 
-    public DataJpaVoteRepository(CrudVoteRepository crudRepository) {
+    public DataJpaVoteRepository(CrudVoteRepository crudRepository, DataJpaRestaurantRepository restaurantRepository, DataJpaUserRepository userRepository) {
         this.crudRepository = crudRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.userRepository = userRepository;
     }
 
-    public Vote save(Vote vote) {
+    public Vote save(int userId, int restaurantId) {
+        Vote vote = new Vote();
+        vote.setRestaurant(restaurantRepository.get(restaurantId));
+        vote.setUser(userRepository.get(userId));
         return crudRepository.save(vote);
     }
 

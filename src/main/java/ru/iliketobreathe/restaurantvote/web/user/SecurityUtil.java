@@ -4,7 +4,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.iliketobreathe.restaurantvote.AuthorizedUser;
 
-
 import static java.util.Objects.requireNonNull;
 
 public class SecurityUtil {

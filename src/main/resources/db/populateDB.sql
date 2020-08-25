@@ -18,8 +18,8 @@ VALUES ('LAGUNA', 100002),
        ('South Star', 100003);
 
 INSERT INTO dishes (name, price, date, restaurant_id)
-VALUES ('Blue crab', 70, '2020-01-30', 100002),
-       ('Crab', 50, '2020-01-30', 100002);
+VALUES ('Blue crab', 70, today(), 100002),
+       ('Crab', 50, today(), 100002);
 
 
 INSERT INTO votes (date, user_id, restaurant_id)
