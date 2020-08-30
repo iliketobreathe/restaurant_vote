@@ -61,16 +61,17 @@ public abstract class AbstractUserController {
     @CacheEvict(value = "users", allEntries = true)
     public void update(User user, int id) {
         log.info("update {} with id={}", user, id);
-        assureIdConsistent(user, id);
         Assert.notNull(user, "user must not be null");
+        assureIdConsistent(user, id);
         prepareToSave(user, passwordEncoder);
-//        repository.save(user);
+        repository.save(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public void update(UserTo userTo, int id) {
         log.info("update {} with id={}", userTo, id);
+        Assert.notNull(userTo, "user must not be null");
         assureIdConsistent(userTo, id);
         User user = get(userTo.id());
         User updatedUser = UserUtil.updateFromTo(user, userTo);

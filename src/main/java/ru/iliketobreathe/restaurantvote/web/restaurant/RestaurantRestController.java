@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.iliketobreathe.restaurantvote.model.Restaurant;
 import ru.iliketobreathe.restaurantvote.model.Vote;
+import ru.iliketobreathe.restaurantvote.util.exception.NotFoundException;
 import ru.iliketobreathe.restaurantvote.web.user.SecurityUtil;
 
 import java.time.LocalDate;
@@ -37,7 +38,7 @@ public class RestaurantRestController extends AbstractRestaurantController {
         Vote vote = voteRepository.getByUserIdAndDate(SecurityUtil.authUserId(), LocalDate.now());
         Restaurant restaurant = super.get(id);
         if (restaurant == null) {
-            throw new Exception("There is no such restaurant");
+            throw new NotFoundException("There is no such restaurant");
         }
         if (vote == null) {
             voteRepository.save(SecurityUtil.authUserId(), id);

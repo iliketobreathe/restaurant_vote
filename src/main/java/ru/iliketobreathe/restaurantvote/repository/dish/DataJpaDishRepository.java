@@ -32,12 +32,11 @@ public class DataJpaDishRepository {
                 .orElse(null);
     }
 
-    public boolean delete(int id) {
-        return crudRepository.delete(id) != 0;
-    }
-
-    public Dish get(int id) {
-        return crudRepository.findById(id).orElse(null);
+    public boolean delete(int id, int restaurantId) {
+        if(get(id, restaurantId) != null) {
+            return crudRepository.delete(id) != 0;
+        }
+        return false;
     }
 
     public List<Dish> getAll(int restaurantId, LocalDate date) {
