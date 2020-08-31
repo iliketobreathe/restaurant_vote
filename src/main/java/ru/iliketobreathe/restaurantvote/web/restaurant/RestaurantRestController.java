@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping(RestaurantRestController.REST_URL)
 public class RestaurantRestController extends AbstractRestaurantController {
     static final String REST_URL = "/rest/profile/restaurants";
+    private static final LocalTime VOTE_MAX_TIME_ALLOWED = LocalTime.of(11, 0);
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Restaurant> getAll(@RequestParam(value = "withDishes", required = false, defaultValue = "true") boolean withDishes) {
@@ -43,8 +44,8 @@ public class RestaurantRestController extends AbstractRestaurantController {
         if (vote == null) {
             voteRepository.save(SecurityUtil.authUserId(), id);
         } else {
-            if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
-                throw new Exception("You can't change your vote after 11:00 A.M.");
+            if (LocalTime.now().isAfter(VOTE_MAX_TIME_ALLOWED)) {
+                throw new Exception("You are not allowed to change your vote after 11:00 A.M.");
             }
             vote.setRestaurant(super.get(id));
         }
