@@ -1,4 +1,4 @@
-package ru.iliketobreathe.restaurantvote.web.user;
+package ru.iliketobreathe.restaurantvote;
 
 import ru.iliketobreathe.restaurantvote.model.Role;
 import ru.iliketobreathe.restaurantvote.model.User;
@@ -6,9 +6,7 @@ import ru.iliketobreathe.restaurantvote.web.json.JsonUtil;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static ru.iliketobreathe.restaurantvote.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {

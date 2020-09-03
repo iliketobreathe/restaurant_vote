@@ -1,4 +1,4 @@
-package ru.iliketobreathe.restaurantvote.web.user;
+package ru.iliketobreathe.restaurantvote;
 
 import org.springframework.test.web.servlet.ResultMatcher;
 
