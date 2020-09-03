@@ -5,16 +5,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import ru.iliketobreathe.restaurantvote.TestUtil;
+import ru.iliketobreathe.restaurantvote.UserTestData;
+import ru.iliketobreathe.restaurantvote.model.Role;
 import ru.iliketobreathe.restaurantvote.model.User;
 import ru.iliketobreathe.restaurantvote.util.exception.NotFoundException;
+import ru.iliketobreathe.restaurantvote.web.AbstractControllerTest;
 import ru.iliketobreathe.restaurantvote.web.json.JsonUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.iliketobreathe.restaurantvote.web.user.TestUtil.userHttpBasic;
-import static ru.iliketobreathe.restaurantvote.web.user.UserTestData.*;
+import static ru.iliketobreathe.restaurantvote.TestUtil.userHttpBasic;
+import static ru.iliketobreathe.restaurantvote.UserTestData.*;
+import static ru.iliketobreathe.restaurantvote.util.exception.ErrorType.VALIDATION_ERROR;
 
 class AdminRestControllerTest extends AbstractControllerTest {
 
@@ -84,8 +91,6 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-
-
         User updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -119,5 +124,56 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(ADMIN, USER));
+    }
+
+    @Test
+    void createInvalid() throws Exception {
+        User expected = new User(null, null, "", "newPass", Role.USER, Role.ADMIN);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(JsonUtil.writeValue(expected)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andDo(print());
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        User updated = new User(USER);
+        updated.setName("");
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void updateDuplicate() throws Exception {
+        User updated = new User(USER);
+        updated.setEmail("admin@gmail.com");
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(jsonWithPassword(updated, "password")))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andDo(print());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void createDuplicate() throws Exception {
+        User expected = new User(null, "New", "user@yandex.ru", "newPass", Role.USER, Role.ADMIN);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(jsonWithPassword(expected, "newPass")))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
     }
 }
