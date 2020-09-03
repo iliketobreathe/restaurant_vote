@@ -8,6 +8,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import ru.iliketobreathe.restaurantvote.model.User;
 import ru.iliketobreathe.restaurantvote.repository.user.DataJpaUserRepository;
 import ru.iliketobreathe.restaurantvote.to.UserTo;
@@ -26,6 +28,14 @@ public abstract class AbstractUserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UniqueMailValidator emailValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(emailValidator);
+    }
 
     @Cacheable("users")
     public List<User> getAll() {
