@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.iliketobreathe.restaurantvote.model.Restaurant;
 import ru.iliketobreathe.restaurantvote.model.Vote;
+import ru.iliketobreathe.restaurantvote.util.exception.LateVoteException;
 import ru.iliketobreathe.restaurantvote.util.exception.NotFoundException;
 import ru.iliketobreathe.restaurantvote.web.user.SecurityUtil;
 
@@ -45,15 +46,9 @@ public class RestaurantRestController extends AbstractRestaurantController {
             voteRepository.save(SecurityUtil.authUserId(), id);
         } else {
             if (LocalTime.now().isAfter(VOTE_MAX_TIME_ALLOWED)) {
-                throw new Exception("You are not allowed to change your vote after 11:00 A.M.");
+                throw new LateVoteException("You are not allowed to change your vote after 11:00 A.M.");
             }
             vote.setRestaurant(super.get(id));
         }
     }
-
-    @GetMapping(value = "/votes", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Vote> getAllVotes() {
-        return voteRepository.getAll();
-    }
-
 }

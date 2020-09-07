@@ -23,6 +23,10 @@ public class Restaurant extends AbstractNamedEntity {
         super(id, name);
     }
 
+    public Restaurant(Restaurant restaurant) {
+        this(restaurant.getId(), restaurant.getName());
+    }
+
     public List<Dish> getDishes() {
         return dishes;
     }

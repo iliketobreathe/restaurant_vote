@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.iliketobreathe.restaurantvote.util.ValidationUtil;
-import ru.iliketobreathe.restaurantvote.util.exception.ErrorInfo;
-import ru.iliketobreathe.restaurantvote.util.exception.ErrorType;
-import ru.iliketobreathe.restaurantvote.util.exception.IllegalRequestDataException;
-import ru.iliketobreathe.restaurantvote.util.exception.NotFoundException;
+import ru.iliketobreathe.restaurantvote.util.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,6 +34,12 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(NotFoundException.class)
     public ErrorInfo handleError(HttpServletRequest req, NotFoundException e) {
         return logAndGetErrorInfo(req, e, false, DATA_NOT_FOUND);
+    }
+
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(LateVoteException.class)
+    public ErrorInfo voteError(HttpServletRequest req, LateVoteException e) {
+        return logAndGetErrorInfo(req, e, false, DATA_ERROR);
     }
 
     @ResponseStatus(value = HttpStatus.CONFLICT)  // 409

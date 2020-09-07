@@ -1,6 +1,7 @@
 package ru.iliketobreathe.restaurantvote.web.restaurant;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class AdminRestaurantRestController extends AbstractRestaurantController 
     static final String REST_URL = "/rest/admin/restaurants";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Cacheable("restaurants")
     public List<Restaurant> getAll(@RequestParam(value = "withDishes", required = false, defaultValue = "true") boolean withDishes) {
         if (withDishes) {
             return super.getAllWithDishes(LocalDate.now());
@@ -40,8 +42,11 @@ public class AdminRestaurantRestController extends AbstractRestaurantController 
     }
 
     @GetMapping(value = "/votes", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Vote> getAllVotes() {
-        return voteRepository.getAll();
+    public List<Vote> getAllVotes(@RequestParam(name = "date", required = false) String date) {
+        if (date == null) {
+            return voteRepository.getAll();
+        }
+        return voteRepository.getAllByDate(LocalDate.parse(date));
     }
 
     @DeleteMapping("/{id}")
@@ -49,6 +54,13 @@ public class AdminRestaurantRestController extends AbstractRestaurantController 
     @CacheEvict(value = "restaurants", allEntries = true)
     public void delete(@PathVariable int id) {
         repository.delete(id);
+    }
+
+    @DeleteMapping("/votes/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "restaurants", allEntries = true)
+    public void deleteVote(@PathVariable int id) {
+        voteRepository.delete(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
