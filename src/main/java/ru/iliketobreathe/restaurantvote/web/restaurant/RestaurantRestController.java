@@ -36,19 +36,20 @@ public class RestaurantRestController extends AbstractRestaurantController {
 
 
     @GetMapping("/{id}/vote")
-    public void vote(@PathVariable int id) throws Exception {
+    public Vote vote(@PathVariable int id) throws Exception {
         Vote vote = voteRepository.getByUserIdAndDate(SecurityUtil.authUserId(), LocalDate.now());
         Restaurant restaurant = super.get(id);
         if (restaurant == null) {
             throw new NotFoundException("There is no such restaurant");
         }
         if (vote == null) {
-            voteRepository.save(SecurityUtil.authUserId(), id);
+            vote = voteRepository.save(SecurityUtil.authUserId(), id);
         } else {
             if (LocalTime.now().isAfter(VOTE_MAX_TIME_ALLOWED)) {
                 throw new LateVoteException("You are not allowed to change your vote after 11:00 A.M.");
             }
             vote.setRestaurant(super.get(id));
         }
+        return vote;
     }
 }

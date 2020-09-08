@@ -26,7 +26,7 @@ import static ru.iliketobreathe.restaurantvote.util.ValidationUtil.*;
 public class AdminDishRestController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    static final String REST_URL = "/rest/admin/restaurants";
+    static final String REST_URL = "/rest/admin/dishes";
 
     DataJpaDishRepository repository;
 
@@ -34,27 +34,27 @@ public class AdminDishRestController {
         this.repository = repository;
     }
 
-    @GetMapping(value = "/{restaurantId}/dishes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Cacheable("dishes")
     public List<Dish> getAll(@PathVariable("restaurantId") int restaurantId) {
         log.info("getAll");
         return repository.getAll(restaurantId, LocalDate.now());
     }
 
-    @GetMapping(value = "/{restaurantId}/dishes/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{restaurantId}/dish/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Dish get(@PathVariable int id, @PathVariable("restaurantId") int restaurantId) {
         log.info("getAll");
         return checkNotFoundWithId(repository.get(id, restaurantId), id);
     }
 
-    @DeleteMapping("/{restaurantId}/dishes/{id}")
+    @DeleteMapping("/{restaurantId}/dish/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "dishes", allEntries = true)
     public void delete(@PathVariable int id, @PathVariable int restaurantId) {
         repository.delete(id, restaurantId);
     }
 
-    @PostMapping(value = "{restaurantId}/dishes", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(value = "dishes", allEntries = true)
     public ResponseEntity<Dish> createWithLocation(@RequestBody Dish dish, @PathVariable int restaurantId) {
         log.info("create {}", dish);
@@ -67,7 +67,7 @@ public class AdminDishRestController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping(value = "/{restaurantId}/dishes/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{restaurantId}/dish/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @CacheEvict(value = "restaurants", allEntries = true)
     @Transactional
