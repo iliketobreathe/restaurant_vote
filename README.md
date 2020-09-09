@@ -14,12 +14,42 @@ Menu changes each day (admins do the updates)
 Users can vote on which restaurant they want to have lunch at
 Only one vote counted per user
 If user votes again the same day:
-If it is before 11:00 we asume that he changed his mind.
+If it is before 11:00 we assume that he changed his mind.
 If it is after 11:00 then it is too late, vote can't be changed
-Each restaurant provides new menu each day.
+Each restaurant provides a new menu each day.
 
 As a result, provide a link to github repository. It should contain the code, README.md with API documentation and couple curl commands to test it.
 
-P.S.: Make sure everything works with latest version that is on github :)
+P.S.: Make sure everything works with the latest version that is on github :)
 
-P.P.S.: Asume that your API will be used by a frontend developer to build frontend on top of that.
+P.P.S.: Assume that your API will be used by a frontend developer to build frontend on top of that.
+
+-------------
+Examples of curl commands for admin:
+
+create new user  
+curl -s -X POST -d '{"name" : "New User", "email" : "newuser@ya.ru", "password" : "newuser", "roles" : ["USER"]}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/voting-system/rest/admin/users --user admin@gmail.com:admin
+
+create new restaurant  
+curl -s -X POST -d '{"name" : "FrogHeaven"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/voting-system/rest/admin/restaurants --user admin@gmail.com:admin
+
+get all restaurants  
+curl -s http://localhost:8080/voting-system/rest/admin/restaurants --user admin@gmail.com:admin
+
+get all today's dishes for restaurant  
+$ curl -s http://localhost:8080/voting-system/rest/admin/dishes/100002 --user admin@gmail.com:admin
+
+get all votes  
+$ curl -s http://localhost:8080/voting-system/rest/profile/restaurants/votes --user admin@gmail.com:admin
+
+Examples of curl commands for general users:
+
+register   
+curl -s -i -X POST -d '{"name":"New User","email":"test@mail.ru","password":"test-password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/voting-system/rest/profile/register
+
+update user information  
+curl -s -X PUT -d '{"name":"newUser","email":"admin@gmail.com","password":"newPassword"}' -H 'Content-Type: application/json' http://localhost:8080/voting-system/rest/profile/ --user user@yandex.ru:password
+
+vote for restaurant  
+$ curl -s http://localhost:8080/voting-system/rest/profile/restaurants/100002/vote --user admin@gmail.com:admin
+

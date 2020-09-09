@@ -12,7 +12,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.iliketobreathe.restaurantvote.model.Dish;
-import ru.iliketobreathe.restaurantvote.model.Restaurant;
 import ru.iliketobreathe.restaurantvote.repository.dish.DataJpaDishRepository;
 
 import java.net.URI;
@@ -43,7 +42,7 @@ public class AdminDishRestController {
 
     @GetMapping(value = "/{restaurantId}/dish/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Dish get(@PathVariable int id, @PathVariable("restaurantId") int restaurantId) {
-        log.info("getAll");
+        log.info("get {}", id);
         return checkNotFoundWithId(repository.get(id, restaurantId), id);
     }
 

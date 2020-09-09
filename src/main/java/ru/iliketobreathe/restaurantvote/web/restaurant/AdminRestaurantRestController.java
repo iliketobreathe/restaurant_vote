@@ -1,7 +1,6 @@
 package ru.iliketobreathe.restaurantvote.web.restaurant;
 
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ public class AdminRestaurantRestController extends AbstractRestaurantController 
     static final String REST_URL = "/rest/admin/restaurants";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Cacheable("restaurants")
     public List<Restaurant> getAll(@RequestParam(value = "withDishes", required = false, defaultValue = "true") boolean withDishes) {
         if (withDishes) {
             return super.getAllWithDishes(LocalDate.now());
