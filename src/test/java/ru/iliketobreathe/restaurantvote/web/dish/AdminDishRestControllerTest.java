@@ -3,8 +3,11 @@ package ru.iliketobreathe.restaurantvote.web.dish;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.iliketobreathe.restaurantvote.DishTestData;
 import ru.iliketobreathe.restaurantvote.model.Dish;
 import ru.iliketobreathe.restaurantvote.util.exception.NotFoundException;
@@ -23,6 +26,7 @@ import static ru.iliketobreathe.restaurantvote.TestUtil.readFromJson;
 import static ru.iliketobreathe.restaurantvote.TestUtil.userHttpBasic;
 import static ru.iliketobreathe.restaurantvote.UserTestData.ADMIN;
 
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AdminDishRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AdminDishRestController.REST_URL + "/";
@@ -49,13 +53,14 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @Sql(scripts = "classpath:db/populateDB.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void delete() throws Exception{
         perform(MockMvcRequestBuilders.delete(REST_URL + REST_1_ID + "/dish/" + DISH_1_ID)
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-
-//        assertThrows(NotFoundException.class, () -> controller.get(DISH_1_ID, REST_1_ID));
+        assertThrows(NotFoundException.class, () -> controller.get(DISH_1_ID, REST_1_ID));
         DISH_MATCHER.assertMatch(List.of(DISH_2), controller.getAll(REST_1_ID));
     }
 
