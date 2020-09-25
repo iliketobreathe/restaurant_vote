@@ -4,7 +4,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -42,7 +41,7 @@ public class AdminRestaurantRestController extends AbstractRestaurantController 
     @GetMapping(value = "/votes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Vote> getAllVotes(@RequestParam(name = "date", required = false) String date) {
         if (date == null) {
-            return voteRepository.getAll();
+            return voteRepository.getAllByDate(LocalDate.now());
         }
         return voteRepository.getAllByDate(LocalDate.parse(date));
     }
@@ -77,7 +76,6 @@ public class AdminRestaurantRestController extends AbstractRestaurantController 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @CacheEvict(value = "restaurants", allEntries = true)
-    @Transactional
     public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
         Assert.notNull(restaurant, "restaurant must not be null");

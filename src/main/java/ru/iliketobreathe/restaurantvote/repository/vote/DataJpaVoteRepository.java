@@ -1,7 +1,9 @@
 package ru.iliketobreathe.restaurantvote.repository.vote;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.iliketobreathe.restaurantvote.model.Vote;
+import ru.iliketobreathe.restaurantvote.repository.restaurant.CrudRestaurantRepository;
 import ru.iliketobreathe.restaurantvote.repository.restaurant.DataJpaRestaurantRepository;
 import ru.iliketobreathe.restaurantvote.repository.user.DataJpaUserRepository;
 
@@ -12,19 +14,20 @@ import java.util.List;
 public class DataJpaVoteRepository {
 
     private final CrudVoteRepository crudRepository;
-    private final DataJpaRestaurantRepository restaurantRepository;
-    private final DataJpaUserRepository userRepository;
+    private final CrudRestaurantRepository crudRestaurantRepository;
 
-    public DataJpaVoteRepository(CrudVoteRepository crudRepository, DataJpaRestaurantRepository restaurantRepository, DataJpaUserRepository userRepository) {
+    public DataJpaVoteRepository(CrudVoteRepository crudRepository, CrudRestaurantRepository crudRestaurantRepository) {
         this.crudRepository = crudRepository;
-        this.restaurantRepository = restaurantRepository;
-        this.userRepository = userRepository;
+        this.crudRestaurantRepository = crudRestaurantRepository;
     }
 
-    public Vote save(int userId, int restaurantId) {
-        Vote vote = new Vote();
-        vote.setRestaurant(restaurantRepository.get(restaurantId));
-        vote.setUser(userRepository.get(userId));
+    @Transactional
+    public Vote save(Vote vote, int restaurantId) {
+        if (!vote.isNew() && get(vote.getId(), restaurantId) == null) {
+            return null;
+        } else if (!vote.isNew()) {
+            vote.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
+        }
         return crudRepository.save(vote);
     }
 
@@ -32,8 +35,10 @@ public class DataJpaVoteRepository {
         return crudRepository.delete(id) != 0;
     }
 
-    public Vote get(int id) {
-        return crudRepository.findById(id).orElse(null);
+    public Vote get(int id, int restaurantId) {
+        return crudRepository.findById(id)
+                .filter(vote -> vote.getRestaurant().getId() == restaurantId)
+                .orElse(null);
     }
 
     public Vote getByUserIdAndDate(int userId, LocalDate date) {

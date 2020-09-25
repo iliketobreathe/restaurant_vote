@@ -1,6 +1,7 @@
 package ru.iliketobreathe.restaurantvote.repository.dish;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.iliketobreathe.restaurantvote.model.Dish;
 import ru.iliketobreathe.restaurantvote.repository.restaurant.CrudRestaurantRepository;
 
@@ -9,20 +10,22 @@ import java.util.List;
 
 @Repository
 public class DataJpaDishRepository {
+
     private final CrudDishRepository crudRepository;
     private final CrudRestaurantRepository crudRestaurantRepository;
-
 
     public DataJpaDishRepository(CrudDishRepository crudRepository, CrudRestaurantRepository crudRestaurantRepository) {
         this.crudRepository = crudRepository;
         this.crudRestaurantRepository = crudRestaurantRepository;
     }
 
+    @Transactional
     public Dish save(Dish dish, int restaurantId) {
         if (!dish.isNew() && get(dish.getId(), restaurantId) == null) {
             return null;
+        } else if (!dish.isNew()) {
+            dish.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
         }
-        dish.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
         return crudRepository.save(dish);
     }
 

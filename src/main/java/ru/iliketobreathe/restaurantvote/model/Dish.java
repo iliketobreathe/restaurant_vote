@@ -1,6 +1,7 @@
 package ru.iliketobreathe.restaurantvote.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
@@ -10,7 +11,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "dishes")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+@Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "dish_date", "restaurant_id"}, name = "name_date_restaurant_idx")})
 public class Dish extends AbstractNamedEntity {
 
     @Column(name = "price", nullable = false)
@@ -18,15 +20,15 @@ public class Dish extends AbstractNamedEntity {
     @NotNull
     private int price;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "dish_date", nullable = false)
     @NotNull
     private LocalDate date = LocalDate.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
-    @JsonBackReference
+//    @JsonBackReference
     private Restaurant restaurant;
 
     public Dish() {

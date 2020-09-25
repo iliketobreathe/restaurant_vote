@@ -25,31 +25,46 @@ P.S.: Make sure everything works with the latest version that is on github :)
 P.P.S.: Assume that your API will be used by a frontend developer to build frontend on top of that.
 
 -------------
+
 Examples of curl commands for admin:
+-----------------------------------
 
-create new user  
-curl -s -X POST -d '{"name" : "New User", "email" : "newuser@ya.ru", "password" : "newuser", "roles" : ["USER"]}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/voting-system/rest/admin/users --user admin@gmail.com:admin
+create new user
 
-create new restaurant  
-curl -s -X POST -d '{"name" : "FrogHeaven"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/voting-system/rest/admin/restaurants --user admin@gmail.com:admin
+    curl -s -X POST -d '{"name" : "New User", "email" : "newuser@ya.ru", "password" : "newuser", "roles" : ["USER"]}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/restaurant_vote/rest/admin/users --user admin@gmail.com:admin
 
-get all restaurants  
-curl -s http://localhost:8080/voting-system/rest/admin/restaurants --user admin@gmail.com:admin
+create new restaurant
 
-get all today's dishes for restaurant  
-$ curl -s http://localhost:8080/voting-system/rest/admin/dishes/100002 --user admin@gmail.com:admin
+    curl -s -X POST -d '{"name" : "FrogHeaven"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/restaurant_vote/rest/admin/restaurants --user admin@gmail.com:admin
 
-get all votes  
-$ curl -s http://localhost:8080/voting-system/rest/profile/restaurants/votes --user admin@gmail.com:admin
+get all restaurants
+
+    curl -s http://localhost:8080/restaurant_vote/rest/admin/restaurants --user admin@gmail.com:admin
+
+get all today's dishes for restaurant
+
+    curl -s http://localhost:8080/restaurant_vote/rest/admin/dishes/100002 --user admin@gmail.com:admin
+
+get all votes
+
+    curl -s http://localhost:8080/restaurant_vote/rest/admin/restaurants/votes --user admin@gmail.com:admin
 
 Examples of curl commands for general users:
+--------------------------------------------
 
-register   
-curl -s -i -X POST -d '{"name":"New User","email":"test@mail.ru","password":"test-password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/voting-system/rest/profile/register
+register
 
-update user information  
-curl -s -X PUT -d '{"name":"newUser","email":"admin@gmail.com","password":"newPassword"}' -H 'Content-Type: application/json' http://localhost:8080/voting-system/rest/profile/ --user user@yandex.ru:password
+    curl -s -i -X POST -d '{"name":"New User","email":"test@mail.ru","password":"test-password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/restaurant_vote/rest/profile/register
 
-vote for restaurant  
-$ curl -s http://localhost:8080/voting-system/rest/profile/restaurants/100002/vote --user admin@gmail.com:admin
+update user information
+
+    curl -s -X PUT -d '{"name":"newUser","email":"admin@gmail.com","password":"newPassword"}' -H 'Content-Type: application/json' http://localhost:8080/restaurant_vote/rest/profile/ --user user@yandex.ru:password
+
+vote for restaurant
+
+    curl -s -X POST -d http://localhost:8080/restaurant_vote/rest/profile/restaurants/100002 --user user@yandex.ru:password
+
+get all restaurants with dishes
+
+    curl -s http://localhost:8080/restaurant_vote/rest/profile/restaurants?withDishes=true --user user@yandex.ru:password
 

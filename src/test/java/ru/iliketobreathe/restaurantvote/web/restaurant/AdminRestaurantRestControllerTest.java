@@ -50,11 +50,11 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllVotes() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "votes")
+        perform(MockMvcRequestBuilders.get(REST_URL + "votes?date=2020-01-30")
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE_1, VOTE_2, VOTE_3)));
+                .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE_1)));
     }
 
     @Test

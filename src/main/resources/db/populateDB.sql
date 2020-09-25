@@ -17,12 +17,12 @@ INSERT INTO restaurants (name)
 VALUES ('LAGUNA'),
        ('South Star');
 
-INSERT INTO dishes (name, price, date, restaurant_id)
+INSERT INTO dishes (name, price, dish_date, restaurant_id)
 VALUES ('Blue crab', 70, today(), 100002),
        ('Crab', 50, today(), 100002);
 
 
-INSERT INTO votes (date, user_id, restaurant_id)
+INSERT INTO votes (vote_date, user_id, restaurant_id)
 VALUES ('2020-01-30', 100000, 100002),
        ('2020-01-31', 100001, 100002),
        ('2020-01-28', 100001, 100003);
