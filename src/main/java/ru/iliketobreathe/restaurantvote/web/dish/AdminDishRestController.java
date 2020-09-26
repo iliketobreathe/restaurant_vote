@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.iliketobreathe.restaurantvote.model.Dish;
 import ru.iliketobreathe.restaurantvote.repository.dish.DataJpaDishRepository;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +34,6 @@ public class AdminDishRestController {
     }
 
     @GetMapping(value = "/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Cacheable("dishes")
     public List<Dish> getAll(@PathVariable("restaurantId") int restaurantId) {
         log.info("getAll");
         return repository.getAll(restaurantId, LocalDate.now());
@@ -47,14 +47,12 @@ public class AdminDishRestController {
 
     @DeleteMapping("/{id}/restaurants/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(value = "dishes", allEntries = true)
     public void delete(@PathVariable int id, @PathVariable int restaurantId) {
         repository.delete(id, restaurantId);
     }
 
     @PostMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CacheEvict(value = "dishes", allEntries = true)
-    public ResponseEntity<Dish> createWithLocation(@RequestBody Dish dish, @PathVariable int restaurantId) {
+    public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish, @PathVariable int restaurantId) {
         log.info("create {}", dish);
         checkNew(dish);
         Assert.notNull(dish, "dish must not be null");
@@ -67,8 +65,7 @@ public class AdminDishRestController {
 
     @PutMapping(value = "/{id}/restaurants/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @CacheEvict(value = "dishes", allEntries = true)
-    public void update(@RequestBody Dish dish, @PathVariable int id, @PathVariable int restaurantId) {
+    public void update(@Valid @RequestBody Dish dish, @PathVariable int id, @PathVariable int restaurantId) {
         log.info("update {} with id={}", dish, id);
         Assert.notNull(dish, "dish must not be null");
         assureIdConsistent(dish, id);

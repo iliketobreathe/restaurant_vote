@@ -23,12 +23,12 @@ public abstract class AbstractRestaurantController {
     DataJpaVoteRepository voteRepository;
 
 
-    @Cacheable("restaurants")
     public List<Restaurant> getAll() {
         log.info("getAll");
         return repository.getAll();
     }
 
+    @Cacheable("restaurants")
     public List<Restaurant> getAllWithDishes(LocalDate date) {
         log.info("getAllWithDishes");
         return repository.getAllWithDishes(date);

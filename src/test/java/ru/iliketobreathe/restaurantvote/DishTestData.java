@@ -13,8 +13,8 @@ public class DishTestData {
     public static final int DISH_1_ID = START_SEQ + 4;
     public static final int DISH_2_ID = START_SEQ + 5;
 
-    public static final Dish DISH_1 = new Dish(100004, "Blue crab", 70, REST_1);
-    public static final Dish DISH_2 = new Dish(100005, "Crab", 50, REST_1);
+    public static final Dish DISH_1 = new Dish(DISH_1_ID, "Blue crab", 70, REST_1);
+    public static final Dish DISH_2 = new Dish(DISH_2_ID, "Crab", 50, REST_1);
 
     public static Dish getNew() {
         return new Dish(null, "New Dish", 999, REST_1);

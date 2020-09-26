@@ -11,6 +11,7 @@ import ru.iliketobreathe.restaurantvote.model.Vote;
 import ru.iliketobreathe.restaurantvote.util.exception.LateVoteException;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -49,7 +50,7 @@ public class RestaurantRestController extends AbstractRestaurantController {
     }
 
     @PostMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Vote> vote(@RequestBody Vote vote, @PathVariable int restaurantId) throws Exception {
+    public ResponseEntity<Vote> vote(@Valid @RequestBody Vote vote, @PathVariable int restaurantId) throws Exception {
         log.info("create {}", vote);
         checkNew(vote);
         Assert.notNull(vote, "vote must not be null");
@@ -66,7 +67,7 @@ public class RestaurantRestController extends AbstractRestaurantController {
 
     @PutMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void voteUpdate(@RequestBody Vote vote, @PathVariable int restaurantId) throws Exception{
+    public void voteUpdate(@Valid @RequestBody Vote vote, @PathVariable int restaurantId) throws Exception{
         log.info("update {}", vote);
         assureIdConsistent(vote, getVote().id());
         if (authUserId() != vote.getUser().id()) {
