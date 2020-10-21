@@ -4,8 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Sort;
 import ru.iliketobreathe.restaurantvote.model.Restaurant;
-import ru.iliketobreathe.restaurantvote.repository.restaurant.DataJpaRestaurantRepository;
+import ru.iliketobreathe.restaurantvote.repository.CrudRestaurantRepository;
 import ru.iliketobreathe.restaurantvote.repository.vote.DataJpaVoteRepository;
 
 import java.time.LocalDate;
@@ -17,15 +18,17 @@ public abstract class AbstractRestaurantController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    DataJpaRestaurantRepository repository;
+    CrudRestaurantRepository repository;
 
     @Autowired
     DataJpaVoteRepository voteRepository;
 
+    private static final Sort SORT_NAME = Sort.by(Sort.Direction.ASC, "name");
+
 
     public List<Restaurant> getAll() {
         log.info("getAll");
-        return repository.getAll();
+        return repository.findAll(SORT_NAME);
     }
 
     @Cacheable("restaurants")
@@ -36,7 +39,7 @@ public abstract class AbstractRestaurantController {
 
     public Restaurant get(int id) {
         log.info("get {}", id);
-        return checkNotFoundWithId(repository.get(id), id);
+        return checkNotFoundWithId(repository.findById(id).orElse(null), id);
     }
 
     public Restaurant getWithDishes(int id, LocalDate date) {

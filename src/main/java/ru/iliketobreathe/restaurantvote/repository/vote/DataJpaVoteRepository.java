@@ -3,9 +3,7 @@ package ru.iliketobreathe.restaurantvote.repository.vote;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.iliketobreathe.restaurantvote.model.Vote;
-import ru.iliketobreathe.restaurantvote.repository.restaurant.CrudRestaurantRepository;
-import ru.iliketobreathe.restaurantvote.repository.restaurant.DataJpaRestaurantRepository;
-import ru.iliketobreathe.restaurantvote.repository.user.DataJpaUserRepository;
+import ru.iliketobreathe.restaurantvote.repository.CrudRestaurantRepository;
 
 import java.time.LocalDate;
 import java.util.List;

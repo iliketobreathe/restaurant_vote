@@ -1,4 +1,4 @@
-package ru.iliketobreathe.restaurantvote.web.dish;
+package ru.iliketobreathe.restaurantvote.web;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.iliketobreathe.restaurantvote.DishTestData;
 import ru.iliketobreathe.restaurantvote.model.Dish;
 import ru.iliketobreathe.restaurantvote.util.exception.NotFoundException;
-import ru.iliketobreathe.restaurantvote.web.AbstractControllerTest;
 import ru.iliketobreathe.restaurantvote.web.json.JsonUtil;
 
 import java.util.List;

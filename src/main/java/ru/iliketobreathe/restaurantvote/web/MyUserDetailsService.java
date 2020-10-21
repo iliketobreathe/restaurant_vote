@@ -5,14 +5,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.iliketobreathe.restaurantvote.AuthorizedUser;
 import ru.iliketobreathe.restaurantvote.model.User;
-import ru.iliketobreathe.restaurantvote.repository.user.DataJpaUserRepository;
+import ru.iliketobreathe.restaurantvote.repository.CrudUserRepository;
 
 @Service("userService")
 public class MyUserDetailsService implements UserDetailsService {
 
-    private final DataJpaUserRepository repository;
+    private final CrudUserRepository repository;
 
-    public MyUserDetailsService(DataJpaUserRepository repository) {
+    public MyUserDetailsService(CrudUserRepository repository) {
         this.repository = repository;
     }
 

@@ -5,16 +5,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import ru.iliketobreathe.restaurantvote.HasIdAndEmail;
 import ru.iliketobreathe.restaurantvote.model.User;
-import ru.iliketobreathe.restaurantvote.repository.user.DataJpaUserRepository;
+import ru.iliketobreathe.restaurantvote.repository.CrudUserRepository;
 import ru.iliketobreathe.restaurantvote.web.ExceptionInfoHandler;
 
 
 @Component
 public class UniqueMailValidator implements org.springframework.validation.Validator {
 
-    private final DataJpaUserRepository repository;
+    private final CrudUserRepository repository;
 
-    public UniqueMailValidator(DataJpaUserRepository repository) {
+    public UniqueMailValidator(CrudUserRepository repository) {
         this.repository = repository;
     }
 

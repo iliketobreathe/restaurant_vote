@@ -15,8 +15,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-import static ru.iliketobreathe.restaurantvote.util.ValidationUtil.assureIdConsistent;
-import static ru.iliketobreathe.restaurantvote.util.ValidationUtil.checkNew;
+import static ru.iliketobreathe.restaurantvote.util.ValidationUtil.*;
 
 @RestController
 @RequestMapping(AdminRestaurantRestController.REST_URL)
@@ -51,14 +50,16 @@ public class AdminRestaurantRestController extends AbstractRestaurantController 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "restaurants", allEntries = true)
     public void delete(@PathVariable int id) {
-        repository.delete(id);
+        log.info("delete {}", id);
+        checkNotFoundWithId(repository.delete(id) != 0, id);
     }
 
     @DeleteMapping("/votes/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "restaurants", allEntries = true)
     public void deleteVote(@PathVariable int id) {
-        voteRepository.delete(id);
+        log.info("delete {}", id);
+        checkNotFoundWithId(voteRepository.delete(id), id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
